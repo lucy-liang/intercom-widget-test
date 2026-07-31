@@ -58,15 +58,15 @@
 <body>
   <main>
     <h1>Intercom messenger test</h1>
-    <p>The launcher should appear in the <strong>bottom-right</strong> corner.</p>
-    <p>If it doesn't, check the console for errors loading <code>widget.intercom.io</code>.</p>
+    <p>The launcher is <strong>hidden by default</strong>. Press the button to reveal it in the bottom-right corner.</p>
+    <p>If nothing appears when you press it, check the console for errors loading <code>widget.intercom.io</code>.</p>
     <dl>
       <dt>app_id</dt><dd>men63xes</dd>
       <dt>user_id</dt><dd>34567</dd>
       <dt>name</dt><dd>Lucy</dd>
       <dt>created_at</dt><dd>1785369600</dd>
     </dl>
-    <button id="toggle" type="button">Hide widget</button>
+    <button id="toggle" type="button">Show widget</button>
   </main>
 
   <script>
@@ -76,7 +76,9 @@
       user_id: "34567",
       name: "Lucy",
       email: "lucy.g.liang@gmail.com",
-      created_at: 1785369600
+      created_at: 1785369600,
+      // Hidden on load; the toggle button reveals it.
+      hide_default_launcher: true
     };
   </script>
   <script>
@@ -89,7 +91,7 @@
     // session and any open conversation intact — unlike shutdown/boot, which
     // tears both down.
     (function () {
-      var hidden = false;
+      var hidden = true; // matches hide_default_launcher in intercomSettings
       var btn = document.getElementById('toggle');
       btn.addEventListener('click', function () {
         hidden = !hidden;
