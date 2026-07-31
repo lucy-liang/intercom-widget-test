@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="intercom-hidden">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,6 +44,20 @@
     button:hover { background: #374151; }
     button:active { transform: translateY(1px); }
     button:focus-visible { outline: 2px solid #2781f6; outline-offset: 2px; }
+
+    /* Hard guarantee that the launcher is hidden.
+       hide_default_launcher alone is not enough: workspace-level Messenger
+       visibility settings can override it, and Intercom injects its launcher
+       asynchronously. Targeting its containers directly always wins. */
+    html.intercom-hidden #intercom-container,
+    html.intercom-hidden #intercom-frame,
+    html.intercom-hidden .intercom-lightweight-app,
+    html.intercom-hidden .intercom-launcher-frame,
+    html.intercom-hidden .intercom-launcher,
+    html.intercom-hidden .intercom-namespace .intercom-app {
+      display: none !important;
+    }
+
     @media (prefers-color-scheme: dark) {
       button { background: #3b82f6; }
       button:hover { background: #2f6fd8; }
@@ -62,7 +76,7 @@
     <p>If nothing appears when you press it, check the console for errors loading <code>widget.intercom.io</code>.</p>
     <dl>
       <dt>app_id</dt><dd>men63xes</dd>
-      <dt>user_id</dt><dd>34567</dd>
+      <dt>user_id</dt><dd>56789</dd>
       <dt>name</dt><dd>Lucy</dd>
       <dt>created_at</dt><dd>1785369600</dd>
     </dl>
@@ -73,11 +87,10 @@
     window.intercomSettings = {
       api_base: "https://api-iam.intercom.io",
       app_id: "men63xes",
-      user_id: "34567",
+      user_id: "56789",
       name: "Lucy",
       email: "lucy.g.liang@gmail.com",
       created_at: 1785369600,
-      // Hidden on load; the toggle button reveals it.
       hide_default_launcher: true
     };
   </script>
@@ -87,14 +100,19 @@
   </script>
 
   <script>
-    // Toggle launcher visibility. `update` with hide_default_launcher keeps the
-    // session and any open conversation intact — unlike shutdown/boot, which
-    // tears both down.
+    // Two mechanisms on purpose:
+    //   1. the `intercom-hidden` class on <html> — CSS, always wins, no flash
+    //   2. Intercom('update', ...) — keeps Intercom's own state in sync
+    // Neither is reliable alone: the API call can be overridden by workspace
+    // settings, and CSS alone leaves Intercom thinking the launcher is visible.
     (function () {
-      var hidden = true; // matches hide_default_launcher in intercomSettings
+      var hidden = true; // matches the class on <html> and hide_default_launcher
+      var root = document.documentElement;
       var btn = document.getElementById('toggle');
+
       btn.addEventListener('click', function () {
         hidden = !hidden;
+        root.classList.toggle('intercom-hidden', hidden);
         window.Intercom('update', { hide_default_launcher: hidden });
         btn.textContent = hidden ? 'Show widget' : 'Hide widget';
       });
