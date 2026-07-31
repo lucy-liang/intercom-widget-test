@@ -29,7 +29,24 @@
     dl { margin: 1.25rem 0 0; font-size: .9rem; }
     dt { font-weight: 600; float: left; clear: left; width: 7rem; color: #666; }
     dd { margin: 0 0 .3rem 7rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    button {
+      margin-top: 1.5rem;
+      padding: .6rem 1.1rem;
+      font: inherit;
+      font-size: .9rem;
+      font-weight: 500;
+      color: #fff;
+      background: #1f2937;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover { background: #374151; }
+    button:active { transform: translateY(1px); }
+    button:focus-visible { outline: 2px solid #2781f6; outline-offset: 2px; }
     @media (prefers-color-scheme: dark) {
+      button { background: #3b82f6; }
+      button:hover { background: #2f6fd8; }
       body { background: #16181d; color: #e8e8ea; }
       main { background: #1f2229; box-shadow: none; }
       p { color: #b3b6bd; }
@@ -49,6 +66,7 @@
       <dt>name</dt><dd>Lucy</dd>
       <dt>created_at</dt><dd>1785369600</dd>
     </dl>
+    <button id="toggle" type="button">Hide widget</button>
   </main>
 
   <script>
@@ -64,6 +82,21 @@
   <script>
     // Intercom standard (no-bundler) loader snippet
     (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/men63xes';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+  </script>
+
+  <script>
+    // Toggle launcher visibility. `update` with hide_default_launcher keeps the
+    // session and any open conversation intact — unlike shutdown/boot, which
+    // tears both down.
+    (function () {
+      var hidden = false;
+      var btn = document.getElementById('toggle');
+      btn.addEventListener('click', function () {
+        hidden = !hidden;
+        window.Intercom('update', { hide_default_launcher: hidden });
+        btn.textContent = hidden ? 'Show widget' : 'Hide widget';
+      });
+    })();
   </script>
 </body>
 </html>
